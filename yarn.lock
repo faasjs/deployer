@@ -683,12 +683,24 @@
   dependencies:
     "@faasjs/utils" "0.0.0-alpha.2"
 
+"@faasjs/logger@0.0.0-alpha.0":
+  version "0.0.0-alpha.0"
+  resolved "https://registry.npm.taobao.org/@faasjs/logger/download/@faasjs/logger-0.0.0-alpha.0.tgz#014468d1031cce285a05dd8d668a5e44ac732589"
+  integrity sha1-AURo0QMczihaBd2NZopeRKxzJYk=
+
 "@faasjs/provider-tencentcloud-apigateway@0.0.0-alpha.2":
   version "0.0.0-alpha.2"
   resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-apigateway/download/@faasjs/provider-tencentcloud-apigateway-0.0.0-alpha.2.tgz#571c934b4347617cd9a65b3dcecee606b6d5417a"
   integrity sha1-VxyTS0NHYXzZpls9zs7mBrbVQXo=
   dependencies:
     "@faasjs/utils" "0.0.0-alpha.2"
+
+"@faasjs/provider-tencentcloud-apigateway@0.0.0-alpha.3":
+  version "0.0.0-alpha.3"
+  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-apigateway/download/@faasjs/provider-tencentcloud-apigateway-0.0.0-alpha.3.tgz#e3e6736db42571529462505c558717357d279740"
+  integrity sha1-4+ZzbbQlcVKUYlBcVYcXNX0nl0A=
+  dependencies:
+    "@faasjs/utils" "0.0.0-alpha.4"
 
 "@faasjs/provider-tencentcloud-scf@0.0.0-alpha.3":
   version "0.0.0-alpha.3"
@@ -698,6 +710,14 @@
     "@faasjs/utils" "0.0.0-alpha.2"
     cos-nodejs-sdk-v5 "*"
 
+"@faasjs/provider-tencentcloud-scf@0.0.0-alpha.4":
+  version "0.0.0-alpha.4"
+  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-scf/download/@faasjs/provider-tencentcloud-scf-0.0.0-alpha.4.tgz#dc8896cd8e8f2251ec487ef1928723aa1e353e2f"
+  integrity sha1-3IiWzY6PIlHsSH7xkocjqh41Pi8=
+  dependencies:
+    "@faasjs/utils" "0.0.0-alpha.4"
+    cos-nodejs-sdk-v5 "*"
+
 "@faasjs/provider-tencentcloud@0.0.0-alpha.0":
   version "0.0.0-alpha.0"
   resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud/download/@faasjs/provider-tencentcloud-0.0.0-alpha.0.tgz#9cb0cd088e0b88a22aa23ee072d6d617a3080c9e"
@@ -705,6 +725,13 @@
   dependencies:
     "@faasjs/provider-tencentcloud-apigateway" "0.0.0-alpha.2"
     "@faasjs/provider-tencentcloud-scf" "0.0.0-alpha.3"
+
+"@faasjs/request@0.0.0-alpha.0":
+  version "0.0.0-alpha.0"
+  resolved "https://registry.npm.taobao.org/@faasjs/request/download/@faasjs/request-0.0.0-alpha.0.tgz#fb910ad73caf9371ed9ba0f809595ed0296c9f27"
+  integrity sha1-+5EK1zyvk3Htm6D4CVle0Clsnyc=
+  dependencies:
+    "@faasjs/logger" "0.0.0-alpha.0"
 
 "@faasjs/trigger-http@0.0.0-alpha.1":
   version "0.0.0-alpha.1"
@@ -718,6 +745,14 @@
   version "0.0.0-alpha.2"
   resolved "https://registry.npm.taobao.org/@faasjs/utils/download/@faasjs/utils-0.0.0-alpha.2.tgz#72f0bdbc8742f1cc13bf506e38c466ad675982c3"
   integrity sha1-cvC9vIdC8cwTv1BuOMRmrWdZgsM=
+
+"@faasjs/utils@0.0.0-alpha.4":
+  version "0.0.0-alpha.4"
+  resolved "https://registry.npm.taobao.org/@faasjs/utils/download/@faasjs/utils-0.0.0-alpha.4.tgz#4ac818232a1a624450748134813aec91e6e07762"
+  integrity sha1-SsgYIyoaYkRQdIE0gTrskebgd2I=
+  dependencies:
+    "@faasjs/logger" "0.0.0-alpha.0"
+    "@faasjs/request" "0.0.0-alpha.0"
 
 "@jest/console@^24.7.1":
   version "24.7.1"
@@ -4186,7 +4221,7 @@ request-promise-native@^1.0.5:
 
 request@^2.81.0, request@^2.87.0:
   version "2.88.0"
-  resolved "https://registry.npm.taobao.org/request/download/request-2.88.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Frequest%2Fdownload%2Frequest-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
+  resolved "https://registry.npm.taobao.org/request/download/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   integrity sha1-nC/KT301tZLv5Xx/ClXoEFIST+8=
   dependencies:
     aws-sign2 "~0.7.0"

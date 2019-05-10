@@ -6,28 +6,17 @@ jest.mock(process.cwd() + '/node_modules/cos-nodejs-sdk-v5', () => {
   };
 });
 
-jest.mock(process.cwd() + '/node_modules/@faasjs/provider-tencentcloud-scf', () => {
-  return {
-    action: async function () {
-      return {
-        Code: 0
-      };
-    },
-    deploy: async function () {
-      return true;
-    }
-  };
-});
-
-jest.mock(process.cwd() + '/node_modules/@faasjs/provider-tencentcloud-apigateway', () => {
-  return {
-    action: async function () {
-      return {
-        Code: 0
-      };
-    },
-    deploy: async function () {
-      return true;
+jest.mock(process.cwd() + '/node_modules/@faasjs/request', () => {
+  return async function (url) {
+    switch (url) {
+      case 'https://apigateway.api.qcloud.com/v2/index.php?':
+        return {
+          body: '{"apiIdStatusSet":[{"apiId":"apiId","path":"/"}]}'
+        };
+      case 'https://scf.tencentcloudapi.com/?':
+        return {
+          body: '{"Response":{}}'
+        };
     }
   };
 });

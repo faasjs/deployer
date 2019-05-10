@@ -17,7 +17,6 @@ resources:
     function: function
     queue: queue
     http: http
-    database: mysql
   # 云函数
   function:
     provider: tencentcloud
@@ -27,9 +26,6 @@ resources:
       MemorySize: 128
       Timeout: 15
       Runtime: Nodejs8.9
-      VpcConfig:
-        VpcId: vpc-m4maqi1a
-        SubnetId: subnet-fv0az5gd
   # 消息队列
   queue:
     provider: tencentcloud
@@ -52,5 +48,3 @@ resources:
       serviceType: SCF
       serviceScfIsIntegratedResponse: 'TRUE'
       serviceTimeout: 16
-  mysql:
-    type: mysql

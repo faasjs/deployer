@@ -130,8 +130,12 @@ export default class Deployer {
           trigger,
         );
 
+        if (typeof triggerResource!.provider === 'string') {
+          triggerResource!.provider = this.providers[triggerResource!.provider];
+        }
+
         triggers.push({
-          deploy: this,
+          name: this.name,
           functionName,
           resource: triggerResource,
           type,
@@ -220,6 +224,7 @@ export default class Deployer {
  * @name ${func.name}
  * @author ${process.env.LOGNAME}
  * @build ${time}
+ * @staging ${this.staging}
  */`,
         footer: `module.exports.config.name = '${this.name}';
 module.exports.config.resource = ${JSON.stringify(this.flow.config.resource)};
@@ -254,7 +259,7 @@ module.exports.handler = module.exports.createTrigger('${func.type}', ${func.key
       this.logger.debug('开始发布云函数');
 
       const sdk = loadSdk(this.root, func.resource.type);
-      await sdk.deploy(func.resource.provider, func);
+      await sdk.deploy(this.staging, func);
     }
 
     for (const trigger of triggers) {
@@ -262,7 +267,7 @@ module.exports.handler = module.exports.createTrigger('${func.type}', ${func.key
       this.logger.debug('开始发布触发器');
 
       const sdk = loadSdk(this.root, trigger.resource.type);
-      await sdk.deploy(this.providers[trigger.resource.provider], trigger);
+      await sdk.deploy(this.staging, trigger);
     }
 
     return true;

@@ -1,6 +1,6 @@
 {
   "name": "@faasjs/deployer",
-  "version": "0.0.0-alpha.0",
+  "version": "0.0.0-alpha.1",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,6 +17,8 @@
   ],
   "dependencies": {
     "@faasjs/flow-tencentcloud": "0.0.0-alpha.2",
+    "@faasjs/provider-tencentcloud-scf": "0.0.0-alpha.4",
+    "@faasjs/provider-tencentcloud-apigateway": "0.0.0-alpha.3",
     "js-yaml": "*",
     "rollup": "*",
     "rollup-plugin-typescript2": "*",

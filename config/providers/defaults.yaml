@@ -1,0 +1,56 @@
+# 服务商配置
+providers:
+  # 腾讯云
+  tencentcloud:
+    type: tencentcloud # 服务商类型，对应 @faasjs/provider-<服务商类型> 的插件
+    config: # 服务商的全局配置
+      appId: appId
+      secretId: secretId
+      secretKey: secretKey
+      region: ap-beijing
+  # 阿里云
+  aliyun:
+    type: aliyun
+# 云资源配置
+resources:
+  defaults:
+    function: function
+    queue: queue
+    http: http
+    database: mysql
+  # 云函数
+  function:
+    provider: tencentcloud
+    type: tencentcloud-scf
+    config:
+      Handler: index.handler
+      MemorySize: 128
+      Timeout: 15
+      Runtime: Nodejs8.9
+      VpcConfig:
+        VpcId: vpc-m4maqi1a
+        SubnetId: subnet-fv0az5gd
+  # 消息队列
+  queue:
+    provider: tencentcloud
+    type: tencentcloud-cmq
+    config:
+      maxMsgHeapNum: 10000000
+      pollingWaitSeconds: 0
+      visibilityTimeout: 60
+      maxMsgSize: 65536
+      msgRetentionSeconds: 1296000
+      rewindSeconds: 0
+  # API 网关
+  http:
+    provider: tencentcloud
+    type: tencentcloud-apigateway
+    config:
+      authRequired: 'FALSE'
+      enableCORS: 'TRUE'
+      requestConfig.method: POST
+      serviceType: SCF
+      serviceScfIsIntegratedResponse: 'TRUE'
+      serviceTimeout: 16
+  mysql:
+    type: mysql

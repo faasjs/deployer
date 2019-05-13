@@ -695,10 +695,10 @@
   dependencies:
     "@faasjs/utils" "0.0.0-alpha.2"
 
-"@faasjs/provider-tencentcloud-apigateway@0.0.0-alpha.3":
-  version "0.0.0-alpha.3"
-  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-apigateway/download/@faasjs/provider-tencentcloud-apigateway-0.0.0-alpha.3.tgz#e3e6736db42571529462505c558717357d279740"
-  integrity sha1-4+ZzbbQlcVKUYlBcVYcXNX0nl0A=
+"@faasjs/provider-tencentcloud-apigateway@0.0.0-alpha.4":
+  version "0.0.0-alpha.4"
+  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-apigateway/download/@faasjs/provider-tencentcloud-apigateway-0.0.0-alpha.4.tgz#490633999fb0dabb3d61d95852b1b82fb32c8a2b"
+  integrity sha1-SQYzmZ+w2rs9YdlYUrG4L7Msiis=
   dependencies:
     "@faasjs/utils" "0.0.0-alpha.4"
 

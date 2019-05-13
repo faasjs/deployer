@@ -6,3 +6,4 @@ package
 coverage
 tmp
 .rpt2_cache
+*.tmp.js

@@ -2,10 +2,11 @@
 import Flow from '@faasjs/flow';
 import { deepMerge, Logger } from '@faasjs/utils';
 import { execSync } from 'child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
 import * as YAML from 'js-yaml';
 import * as rollup from 'rollup';
 import typescript from 'rollup-plugin-typescript2';
+import { register } from 'ts-node';
 
 const loadConfig = function (folder: string, staging: string) {
   const configs = [
@@ -31,7 +32,7 @@ const loadSdk = function (root: string, name: string) {
 
   const paths = [
     `${root}/config/providers/libs/${name}/index.ts`,
-    `${root}/node_modules/@faasjs/provider-${name}/lib/index.js`,
+    `${process.cwd()}/node_modules/@faasjs/provider-${name}/lib/index.js`,
   ];
 
   for (const path of paths) {
@@ -66,8 +67,15 @@ export default class Deployer {
   constructor (root: string, file: string, staging?: string) {
     this.root = root;
     this.file = file;
-    this.name = file.match(/([^/]+)\.flow\.ts$/)![1];
-    this.flow = require(file).default;
+
+    // 临时编译 ts
+    writeFileSync(file + '.tmp.js', register().compile(readFileSync(file).toString(), file));
+    this.flow = require(file + '.tmp.js').default;
+    unlinkSync(file + '.tmp.js');
+
+    this.name = file.replace(root, '').replace('.flow.ts', '').replace(/(\/|\\)/g, '_').replace(/^_?[^_]+_/, '').replace(/_$/, '');
+    console.log(this.name);
+
     this.staging = staging || 'testing';
 
     const config = loadConfig(root + '/config/providers', this.staging);

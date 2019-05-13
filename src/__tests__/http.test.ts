@@ -2,14 +2,14 @@ import Deploy from '../index';
 
 describe('http', function () {
   test('constructor', function () {
-    const deploy = new Deploy(process.cwd(), __dirname + '/flows/http.flow.ts');
+    const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
 
     expect(deploy.file).toEqual(__dirname + '/flows/http.flow.ts');
     expect(deploy.name).toEqual('http');
   });
 
   test('build', async function () {
-    const deploy = new Deploy(process.cwd(), __dirname + '/flows/http.flow.ts');
+    const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
     const info = await deploy.build();
 
     const handler = require(info.functions[0].tmpFolder + '/index.js').handler;
@@ -22,7 +22,7 @@ describe('http', function () {
   }, 10000);
 
   test('deploy', async function () {
-    const deploy = new Deploy(process.cwd(), __dirname + '/flows/http.flow.ts');
+    const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
     const info = await deploy.build();
     const res = await deploy.deploy(info);
 

@@ -23,7 +23,8 @@
     "rollup": "*",
     "rollup-plugin-typescript2": "*",
     "tslib": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "ts-node": "*"
   },
   "devDependencies": {
     "@babel/core": "*",

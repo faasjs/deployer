@@ -5,7 +5,6 @@ describe('basic', function () {
     const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/basic.flow.ts');
 
     expect(deploy.file).toEqual(__dirname + '/flows/basic.flow.ts');
-    expect(deploy.name).toEqual('basic');
   });
 
   test('build', async function () {
@@ -15,6 +14,7 @@ describe('basic', function () {
     const handler = require(info.functions[0].tmpFolder + '/index.js').handler;
     const res = await handler(0, {});
 
+    expect(deploy.name).toEqual('basic');
     expect(info.functions).toHaveLength(1);
     expect(res).toEqual(3);
   }, 10000);

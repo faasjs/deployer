@@ -4,7 +4,9 @@ export default new Flow(
   {
     mode: 'async',
     triggers: {
-      http: {},
+      http: {
+        path: '/async'
+      },
     },
   },
   function () {

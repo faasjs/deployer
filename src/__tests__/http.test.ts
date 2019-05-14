@@ -5,7 +5,6 @@ describe('http', function () {
     const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
 
     expect(deploy.file).toEqual(__dirname + '/flows/http.flow.ts');
-    expect(deploy.name).toEqual('http');
   });
 
   test('build', async function () {
@@ -15,6 +14,7 @@ describe('http', function () {
     const handler = require(info.functions[0].tmpFolder + '/index.js').handler;
     const res = await handler(0, {});
 
+    expect(deploy.name).toEqual('http');
     expect(info.functions).toHaveLength(1);
     expect(info.triggers).toHaveLength(1);
     expect(res.statusCode).toEqual(200);

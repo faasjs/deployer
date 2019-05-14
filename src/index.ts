@@ -1,12 +1,12 @@
 /* eslint-disable security/detect-non-literal-require */
 import Flow from '@faasjs/flow';
-import { deepMerge, Logger } from '@faasjs/utils';
+import deepMerge from '@faasjs/deep_merge';
+import Logger from '@faasjs/logger';
 import { execSync } from 'child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
 import * as YAML from 'js-yaml';
 import * as rollup from 'rollup';
 import typescript from 'rollup-plugin-typescript2';
-import { register } from 'ts-node';
 
 const loadConfig = function (folder: string, staging: string) {
   const configs = [
@@ -49,11 +49,11 @@ const loadSdk = function (root: string, name: string) {
  * 发布实例
  */
 export default class Deployer {
-  public name: string;
+  public name?: string;
   public root: string;
   public file: string;
   public staging: string;
-  public flow: Flow;
+  public flow?: Flow;
   public providers: any;
   public resources: any;
   public logger: Logger;
@@ -67,18 +67,44 @@ export default class Deployer {
   constructor (root: string, file: string, staging?: string) {
     this.root = root;
     this.file = file;
+    this.staging = staging || 'testing';
+    this.logger = new Logger('@faasjs/deployer');
+  }
+
+  public async build () {
+    this.logger.debug('build %s', this.file);
 
     // 临时编译 ts
-    writeFileSync(file + '.tmp.js', register().compile(readFileSync(file).toString(), file));
-    this.flow = require(file + '.tmp.js').default;
-    unlinkSync(file + '.tmp.js');
+    const bundle = await rollup.rollup({
+      input: this.file,
+      plugins: [
+        typescript({
+          tsconfigOverride: {
+            compilerOptions: {
+              declaration: false,
+              module: 'esnext'
+            }
+          }
+        }),
+      ]
+    });
 
-    this.name = file.replace(root, '').replace('.flow.ts', '').replace(/(\/|\\)/g, '_').replace(/^_?[^_]+_/, '').replace(/_$/, '');
-    console.log(this.name);
+    await bundle.write({
+      file: this.file + '.tmp.js',
+      format: 'cjs'
+    });
 
-    this.staging = staging || 'testing';
+    this.flow = require(this.file + '.tmp.js');
 
-    const config = loadConfig(root + '/config/providers', this.staging);
+    unlinkSync(this.file + '.tmp.js');
+
+    if (!this.flow) {
+      throw Error('Flow load failed');
+    }
+
+    this.name = this.flow.config.name || this.file.replace(this.root, '').replace('.flow.ts', '').replace(/(\/|\\)/g, '_').replace(/^_?[^_]+_/, '').replace(/_$/, '');
+
+    const config = loadConfig(this.root + '/config/providers', this.staging);
 
     // 处理云函数的资源配置
     let resourceName = this.flow.config.resource!.name || config.resources.defaults.function;
@@ -87,7 +113,7 @@ export default class Deployer {
       throw Error('Not found resource: ' + resourceName);
     }
 
-    this.flow.config.resource = deepMerge(config.resources[resourceName as string], this.flow.config.resource);
+    this.flow.config.resource = deepMerge(config.resources[resourceName as string], this.flow!.config.resource);
 
     if (typeof this.flow.config.resource!.provider === 'string') {
       this.flow.config.resource!.provider = config.providers[this.flow.config.resource!.provider];
@@ -95,11 +121,6 @@ export default class Deployer {
 
     this.providers = config.providers;
     this.resources = config.resources;
-    this.logger = new Logger('@faasjs/deploy:' + this.name);
-  }
-
-  public async build () {
-    this.logger.debug('build %s', this.file);
 
     const time = new Date().toLocaleString('zh-CN', {
       hour12: false,
@@ -135,7 +156,7 @@ export default class Deployer {
         const triggerResource = deepMerge(
           this.resources[triggerResourceName as string],
           { name: triggerResourceName },
-          trigger,
+          trigger.resource,
         );
 
         if (typeof triggerResource!.provider === 'string') {
@@ -147,6 +168,7 @@ export default class Deployer {
           functionName,
           resource: triggerResource,
           type,
+          origin: trigger
         });
       }
     }
@@ -192,7 +214,7 @@ export default class Deployer {
       this.logger.debug('添加基础依赖');
       func.packageJSON = {
         dependencies: {
-          '@faasjs/flow-tencentcloud': '0.0.0-alpha.2',
+          '@faasjs/flow-tencentcloud': '0.0.0-alpha.3',
         },
         name: func.name,
         private: true,
@@ -218,7 +240,6 @@ export default class Deployer {
       bundle.cache.modules!.forEach(function (m: { dependencies: string[] }) {
         m.dependencies.forEach(function (d: string) {
           if (d.includes('node_modules') && !func.packageJSON.dependencies[d as string]) {
-            console.log(d);
             func.packageJSON.dependencies[d as string] = '*';
           }
         });

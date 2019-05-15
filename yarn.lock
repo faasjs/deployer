@@ -695,10 +695,10 @@
   resolved "https://registry.npm.taobao.org/@faasjs/logger/download/@faasjs/logger-0.0.0-alpha.0.tgz#014468d1031cce285a05dd8d668a5e44ac732589"
   integrity sha1-AURo0QMczihaBd2NZopeRKxzJYk=
 
-"@faasjs/provider-tencentcloud-apigateway@0.0.0-alpha.5":
-  version "0.0.0-alpha.5"
-  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-apigateway/download/@faasjs/provider-tencentcloud-apigateway-0.0.0-alpha.5.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40faasjs%2Fprovider-tencentcloud-apigateway%2Fdownload%2F%40faasjs%2Fprovider-tencentcloud-apigateway-0.0.0-alpha.5.tgz#09ad0291a6a62c1586a5f40af45a7a43a00e2ddb"
-  integrity sha1-Ca0CkaamLBWGpfQK9Fp6Q6AOLds=
+"@faasjs/provider-tencentcloud-apigateway@0.0.0-alpha.6":
+  version "0.0.0-alpha.6"
+  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-apigateway/download/@faasjs/provider-tencentcloud-apigateway-0.0.0-alpha.6.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40faasjs%2Fprovider-tencentcloud-apigateway%2Fdownload%2F%40faasjs%2Fprovider-tencentcloud-apigateway-0.0.0-alpha.6.tgz#fc06bb0a1ee3efda3e4fbdbe990807f6c3f2e2fd"
+  integrity sha1-/Aa7Ch7j79o+T72+mQgH9sPy4v0=
   dependencies:
     "@faasjs/logger" "0.0.0-alpha.0"
     "@faasjs/request" "0.0.0-alpha.0"
@@ -707,6 +707,16 @@
   version "0.0.0-alpha.5"
   resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-scf/download/@faasjs/provider-tencentcloud-scf-0.0.0-alpha.5.tgz#141e81bfb162beab2f80d2d1543b87c6fe07b14d"
   integrity sha1-FB6Bv7FivqsvgNLRVDuHxv4HsU0=
+  dependencies:
+    "@faasjs/deep_merge" "0.0.0-alpha.0"
+    "@faasjs/logger" "0.0.0-alpha.0"
+    "@faasjs/request" "0.0.0-alpha.0"
+    cos-nodejs-sdk-v5 "*"
+
+"@faasjs/provider-tencentcloud-scf@0.0.0-alpha.6":
+  version "0.0.0-alpha.6"
+  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-scf/download/@faasjs/provider-tencentcloud-scf-0.0.0-alpha.6.tgz#12f4a57f4565091fc17158ea62610154d938b0ea"
+  integrity sha1-EvSlf0VlCR/BcVjqYmEBVNk4sOo=
   dependencies:
     "@faasjs/deep_merge" "0.0.0-alpha.0"
     "@faasjs/logger" "0.0.0-alpha.0"

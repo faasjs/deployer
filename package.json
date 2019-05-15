@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "@faasjs/flow-tencentcloud": "0.0.0-alpha.3",
-    "@faasjs/provider-tencentcloud-apigateway": "0.0.0-alpha.5",
+    "@faasjs/provider-tencentcloud-apigateway": "0.0.0-alpha.6",
     "@faasjs/provider-tencentcloud-scf": "0.0.0-alpha.6",
     "js-yaml": "*",
     "rollup": "*",

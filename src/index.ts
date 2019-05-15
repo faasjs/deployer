@@ -10,8 +10,8 @@ import typescript from 'rollup-plugin-typescript2';
 
 const loadConfig = function (folder: string, staging: string) {
   const configs = [
-    YAML.safeLoad(readFileSync(folder + '/defaults.yaml').toString()),
-    YAML.safeLoad(readFileSync(folder + '/' + staging + '.yaml').toString()),
+    YAML.safeLoad(readFileSync(folder + 'defaults.yaml').toString()),
+    YAML.safeLoad(readFileSync(folder + staging + '.yaml').toString()),
   ];
 
   return deepMerge.apply(null, configs);
@@ -45,6 +45,26 @@ const loadSdk = function (root: string, name: string) {
   throw Error(`Sdk load failed\nfind paths:\n${paths.join('\n')}`);
 };
 
+interface Func {
+  build: string;
+  key: number;
+  name: string;
+  resource: any;
+  type: string;
+  tmpFolder?: string;
+  packageJSON?: {
+    [key: string]: any;
+  };
+}
+
+interface Trigger {
+  name: string;
+  resource: any;
+  type: string;
+  origin: any;
+  func: Func;
+}
+
 /**
  * 发布实例
  */
@@ -65,7 +85,11 @@ export default class Deployer {
    * @param staging {string} 发布环境，默认为 testing
    */
   constructor (root: string, file: string, staging?: string) {
-    this.root = root;
+    if (root.endsWith('/')) {
+      this.root = root;
+    } else {
+      this.root = root + '/';
+    }
     this.file = file;
     this.staging = staging || 'testing';
     this.logger = new Logger('@faasjs/deployer');
@@ -104,7 +128,7 @@ export default class Deployer {
 
     this.name = this.flow.config.name || this.file.replace(this.root, '').replace('.flow.ts', '').replace(/(\/|\\)/g, '_').replace(/^_?[^_]+_/, '').replace(/_$/, '');
 
-    const config = loadConfig(this.root + '/config/providers', this.staging);
+    const config = loadConfig(this.root + 'config/providers/', this.staging);
 
     // 处理云函数的资源配置
     let resourceName = this.flow.config.resource!.name || config.resources.defaults.function;
@@ -127,25 +151,26 @@ export default class Deployer {
       timeZone: 'Asia/Shanghai',
     }).replace(/(\/|:|\s)/g, '_');
 
-    const tmpFolder = `${this.root}/tmp/functions/${this.name}/${time}`;
+    const tmpFolder = `${this.root}tmp/functions/${this.name}/${time}`;
 
     this.logger.debug('解析云函数');
 
-    const functions: any[] = [];
-    const triggers: any[] = [];
+    const functions: Func[] = [];
+    const triggers: Trigger[] = [];
 
     // 解析触发配置
     for (const type in this.flow.config.triggers) {
       if (this.flow.config.triggers.hasOwnProperty(type)) {
         // 增加触发函数
-        const functionName = this.name + '_trigger_' + type;
-
-        functions.push({
+        const func: Func = {
+          build: time,
           key: -1,
-          name: functionName,
+          name: this.name + '_trigger_' + type,
           resource: this.flow.config.resource,
           type,
-        });
+        };
+
+        functions.push(func);
 
         // 增加触发器
         const trigger = this.flow.config.triggers[type as string];
@@ -165,10 +190,10 @@ export default class Deployer {
 
         triggers.push({
           name: this.name,
-          functionName,
           resource: triggerResource,
           type,
-          origin: trigger
+          origin: trigger,
+          func,
         });
       }
     }
@@ -176,6 +201,7 @@ export default class Deployer {
     // 若未配置触发器且不是异步模式，则默认生成一个 invoke 触发器的云函数
     if (functions.length === 0 && this.flow.config.mode === 'sync') {
       functions.push({
+        build: time,
         key: -1,
         name: this.name + '_invoke_-1',
         resource: this.flow.config.resource,
@@ -187,6 +213,7 @@ export default class Deployer {
     if (this.flow.config.mode === 'async') {
       for (let i = 0; i < this.flow.steps.length; i++) {
         functions.push({
+          build: time,
           key: i,
           name: this.name + '_invoke_' + i,
           resource: this.flow.config.resource,
@@ -218,7 +245,7 @@ export default class Deployer {
         },
         name: func.name,
         private: true,
-        version: time,
+        version: func.build,
       };
 
       this.logger.debug('写入 index.js');
@@ -239,8 +266,8 @@ export default class Deployer {
 
       bundle.cache.modules!.forEach(function (m: { dependencies: string[] }) {
         m.dependencies.forEach(function (d: string) {
-          if (d.includes('node_modules') && !func.packageJSON.dependencies[d as string]) {
-            func.packageJSON.dependencies[d as string] = '*';
+          if (d.includes('node_modules') && !func.packageJSON!.dependencies[d as string]) {
+            func.packageJSON!.dependencies[d as string] = '*';
           }
         });
       });
@@ -252,7 +279,7 @@ export default class Deployer {
         banner: `/**
  * @name ${func.name}
  * @author ${process.env.LOGNAME}
- * @build ${time}
+ * @build ${func.build}
  * @staging ${this.staging}
  */`,
         footer: `module.exports.config.name = '${this.name}';

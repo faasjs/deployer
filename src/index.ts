@@ -8,11 +8,31 @@ import * as YAML from 'js-yaml';
 import * as rollup from 'rollup';
 import typescript from 'rollup-plugin-typescript2';
 
-const loadConfig = function (folder: string, staging: string) {
-  const configs = [
-    YAML.safeLoad(readFileSync(folder + 'defaults.yaml').toString()),
-    YAML.safeLoad(readFileSync(folder + staging + '.yaml').toString()),
-  ];
+const loadConfig = function (root: string, file: string, staging: string) {
+  const configs: any[] = [];
+
+  const paths = file.replace(root, '').replace(/\/[^/]+$/, '').split('/');
+
+  const roots = root.split('/');
+  roots.pop();
+  paths.unshift(roots.pop() as string);
+  paths.unshift(roots.join('/'));
+
+  paths.reduce(function (base, path) {
+    const root = base + '/' + path;
+    const defaults = root + '/config/providers/defaults.yaml';
+
+    if (existsSync(defaults)) {
+      configs.push(YAML.safeLoad(readFileSync(defaults).toString()));
+    }
+
+    const env = root + '/config/providers/' + staging + '.yaml';
+    if (existsSync(env)) {
+      configs.push(YAML.safeLoad(readFileSync(env).toString()));
+    }
+
+    return root;
+  });
 
   return deepMerge.apply(null, configs);
 };
@@ -47,10 +67,9 @@ const loadSdk = function (root: string, name: string) {
 
 interface Func {
   build: string;
-  key: number;
   name: string;
   resource: any;
-  type: string;
+  type: string | number;
   tmpFolder?: string;
   packageJSON?: {
     [key: string]: any;
@@ -140,7 +159,7 @@ export default class Deployer {
 
     this.name = this.flow.config.name || this.file.replace(this.root, '').replace('.flow.ts', '').replace(/^\/?[^/]+\//, '').replace(/\/$/, '');
 
-    const config = loadConfig(this.root + 'config/providers/', this.staging);
+    const config = loadConfig(this.root, this.file, this.staging);
 
     // 处理云函数的资源配置
     let resourceName = this.flow.config.resource!.name || config.resources.defaults.function;
@@ -177,7 +196,6 @@ export default class Deployer {
         // 增加触发函数
         const func: Func = {
           build: time,
-          key: -1,
           name: this.name + '@trigger_' + type,
           resource: this.flow.config.resource,
           type,
@@ -215,10 +233,9 @@ export default class Deployer {
     if (functions.length === 0 && this.flow.config.mode === 'sync') {
       functions.push({
         build: time,
-        key: -1,
         name: this.name + '@invoke_-1',
         resource: this.flow.config.resource,
-        type: 'invoke',
+        type: -1,
       });
     }
 
@@ -227,10 +244,9 @@ export default class Deployer {
       for (let i = 0; i < this.flow.steps.length; i++) {
         functions.push({
           build: time,
-          key: i,
           name: this.name + '@invoke_' + i,
           resource: this.flow.config.resource,
-          type: 'invoke',
+          type: i,
         });
       }
     }
@@ -352,7 +368,7 @@ const flow = module.exports;
 flow.config.name = '${this.name}';
 flow.config.resource = deepMerge(${JSON.stringify(this.flow.config.resource)}, flow.config.resource);
 flow.config.resources = deepMerge(${JSON.stringify(this.flow.config.resources)}, flow.config.resources);
-flow.handler = flow.createTrigger('${func.type}', ${func.key});`
+flow.handler = flow.createTrigger(${JSON.stringify(func.type)});`
       });
 
       this.logger.debug('写入 package.json');

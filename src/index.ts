@@ -241,7 +241,7 @@ export default class Deployer {
       this.logger.debug('添加基础依赖');
       func.packageJSON = {
         dependencies: {
-          '@faasjs/flow-tencentcloud': '0.0.0-alpha.3',
+          '@faasjs/flow-tencentcloud': 'beta',
         },
         name: func.name,
         private: true,

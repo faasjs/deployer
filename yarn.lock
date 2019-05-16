@@ -649,12 +649,12 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@faasjs/deep_merge@0.0.0-alpha.0":
-  version "0.0.0-alpha.0"
-  resolved "https://registry.npmjs.org/@faasjs/deep_merge/-/deep_merge-0.0.0-alpha.0.tgz#ef85c18d4e1b35e08851558b3957b5ecbe5f9397"
-  integrity sha512-2ybIVnBCmYMfFC0kQ03u2wOhPRtckpcULR5V1/a79otHLau/KfluW2R21pofEyaoFzLkksY1OITdhAzdiBZeuQ==
+"@faasjs/deep_merge@beta":
+  version "0.0.0-alpha.1"
+  resolved "https://registry.npm.taobao.org/@faasjs/deep_merge/download/@faasjs/deep_merge-0.0.0-alpha.1.tgz#1ffa952a1dee1391898d74ef6eb9e314dbeff4c7"
+  integrity sha1-H/qVKh3uE5GJjXTvbrnjFNvv9Mc=
 
-"@faasjs/eslint-config-recommended@0.0.0-alpha.1":
+"@faasjs/eslint-config-recommended@beta":
   version "0.0.0-alpha.1"
   resolved "https://registry.npm.taobao.org/@faasjs/eslint-config-recommended/download/@faasjs/eslint-config-recommended-0.0.0-alpha.1.tgz#3888e4e50e1eac30e9ee500e37f52bfceb5916c0"
   integrity sha1-OIjk5Q4erDDp7lAON/Ur/OtZFsA=
@@ -665,77 +665,59 @@
     eslint-plugin-security "*"
     typescript "*"
 
-"@faasjs/flow-tencentcloud@0.0.0-alpha.3":
-  version "0.0.0-alpha.3"
-  resolved "https://registry.npm.taobao.org/@faasjs/flow-tencentcloud/download/@faasjs/flow-tencentcloud-0.0.0-alpha.3.tgz#8afa3eeb0f5f2a72e9c6b1e6b024d20e559297b9"
-  integrity sha1-ivo+6w9fKnLpxrHmsCTSDlWSl7k=
+"@faasjs/flow-tencentcloud@beta":
+  version "0.0.0-alpha.4"
+  resolved "https://registry.npm.taobao.org/@faasjs/flow-tencentcloud/download/@faasjs/flow-tencentcloud-0.0.0-alpha.4.tgz#d8bc3ea836e075d7aba532cd5a77a4978c4b9755"
+  integrity sha1-2Lw+qDbgdderpTLNWnekl4xLl1U=
   dependencies:
-    "@faasjs/flow" "0.0.0-alpha.13"
-    "@faasjs/provider-tencentcloud-scf" "0.0.0-alpha.5"
-    "@faasjs/trigger-http" "0.0.0-alpha.2"
+    "@faasjs/flow" beta
+    "@faasjs/provider-tencentcloud-scf" beta
+    "@faasjs/trigger-http" beta
 
-"@faasjs/flow@0.0.0-alpha.12":
-  version "0.0.0-alpha.12"
-  resolved "https://registry.npm.taobao.org/@faasjs/flow/download/@faasjs/flow-0.0.0-alpha.12.tgz#578a0573120d76c71810a05cc6c06528a3e6babd"
-  integrity sha1-V4oFcxINdscYEKBcxsBlKKPmur0=
+"@faasjs/flow@beta":
+  version "0.0.0-alpha.15"
+  resolved "https://registry.npm.taobao.org/@faasjs/flow/download/@faasjs/flow-0.0.0-alpha.15.tgz#fb59cd0ee461c9fdbff81a3bfac23d02faba9ab8"
+  integrity sha1-+1nNDuRhyf2/+Bo7+sI9Avq6mrg=
   dependencies:
-    "@faasjs/deep_merge" "0.0.0-alpha.0"
-    "@faasjs/logger" "0.0.0-alpha.0"
+    "@faasjs/deep_merge" beta
+    "@faasjs/logger" beta
 
-"@faasjs/flow@0.0.0-alpha.13":
-  version "0.0.0-alpha.13"
-  resolved "https://registry.npm.taobao.org/@faasjs/flow/download/@faasjs/flow-0.0.0-alpha.13.tgz#649f84765546d5283a0733779be521dacf092915"
-  integrity sha1-ZJ+EdlVG1Sg6BzN3m+Uh2s8JKRU=
-  dependencies:
-    "@faasjs/deep_merge" "0.0.0-alpha.0"
-    "@faasjs/logger" "0.0.0-alpha.0"
-
-"@faasjs/logger@0.0.0-alpha.0":
-  version "0.0.0-alpha.0"
-  resolved "https://registry.npm.taobao.org/@faasjs/logger/download/@faasjs/logger-0.0.0-alpha.0.tgz#014468d1031cce285a05dd8d668a5e44ac732589"
-  integrity sha1-AURo0QMczihaBd2NZopeRKxzJYk=
-
-"@faasjs/provider-tencentcloud-apigateway@0.0.0-alpha.6":
-  version "0.0.0-alpha.6"
-  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-apigateway/download/@faasjs/provider-tencentcloud-apigateway-0.0.0-alpha.6.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40faasjs%2Fprovider-tencentcloud-apigateway%2Fdownload%2F%40faasjs%2Fprovider-tencentcloud-apigateway-0.0.0-alpha.6.tgz#fc06bb0a1ee3efda3e4fbdbe990807f6c3f2e2fd"
-  integrity sha1-/Aa7Ch7j79o+T72+mQgH9sPy4v0=
-  dependencies:
-    "@faasjs/logger" "0.0.0-alpha.0"
-    "@faasjs/request" "0.0.0-alpha.0"
-
-"@faasjs/provider-tencentcloud-scf@0.0.0-alpha.5":
-  version "0.0.0-alpha.5"
-  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-scf/download/@faasjs/provider-tencentcloud-scf-0.0.0-alpha.5.tgz#141e81bfb162beab2f80d2d1543b87c6fe07b14d"
-  integrity sha1-FB6Bv7FivqsvgNLRVDuHxv4HsU0=
-  dependencies:
-    "@faasjs/deep_merge" "0.0.0-alpha.0"
-    "@faasjs/logger" "0.0.0-alpha.0"
-    "@faasjs/request" "0.0.0-alpha.0"
-    cos-nodejs-sdk-v5 "*"
-
-"@faasjs/provider-tencentcloud-scf@0.0.0-alpha.6":
-  version "0.0.0-alpha.6"
-  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-scf/download/@faasjs/provider-tencentcloud-scf-0.0.0-alpha.6.tgz#12f4a57f4565091fc17158ea62610154d938b0ea"
-  integrity sha1-EvSlf0VlCR/BcVjqYmEBVNk4sOo=
-  dependencies:
-    "@faasjs/deep_merge" "0.0.0-alpha.0"
-    "@faasjs/logger" "0.0.0-alpha.0"
-    "@faasjs/request" "0.0.0-alpha.0"
-    cos-nodejs-sdk-v5 "*"
-
-"@faasjs/request@0.0.0-alpha.0":
-  version "0.0.0-alpha.0"
-  resolved "https://registry.npm.taobao.org/@faasjs/request/download/@faasjs/request-0.0.0-alpha.0.tgz#fb910ad73caf9371ed9ba0f809595ed0296c9f27"
-  integrity sha1-+5EK1zyvk3Htm6D4CVle0Clsnyc=
-  dependencies:
-    "@faasjs/logger" "0.0.0-alpha.0"
-
-"@faasjs/trigger-http@0.0.0-alpha.2":
+"@faasjs/logger@beta":
   version "0.0.0-alpha.2"
-  resolved "https://registry.npm.taobao.org/@faasjs/trigger-http/download/@faasjs/trigger-http-0.0.0-alpha.2.tgz#d22ab0c5f50edd3320655fef278bcc107efc4e3c"
-  integrity sha1-0iqwxfUO3TMgZV/vJ4vMEH78Tjw=
+  resolved "https://registry.npm.taobao.org/@faasjs/logger/download/@faasjs/logger-0.0.0-alpha.2.tgz#f318ce9acf5f988bfc7f4fd5e5687dad537cbf44"
+  integrity sha1-8xjOms9fmIv8f0/V5Wh9rVN8v0Q=
+
+"@faasjs/provider-tencentcloud-apigateway@beta":
+  version "0.0.0-alpha.7"
+  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-apigateway/download/@faasjs/provider-tencentcloud-apigateway-0.0.0-alpha.7.tgz#40dc18e2d3f3d5b90fec1ca92f9e2285c297609d"
+  integrity sha1-QNwY4tPz1bkP7BypL54ihcKXYJ0=
   dependencies:
-    "@faasjs/flow" "0.0.0-alpha.12"
+    "@faasjs/logger" beta
+    "@faasjs/request" beta
+
+"@faasjs/provider-tencentcloud-scf@beta":
+  version "0.0.0-alpha.8"
+  resolved "https://registry.npm.taobao.org/@faasjs/provider-tencentcloud-scf/download/@faasjs/provider-tencentcloud-scf-0.0.0-alpha.8.tgz#b95446637ead5bc02ec1cc47e5ba78a1c01a9107"
+  integrity sha1-uVRGY36tW8AuwcxH5bp4ocAakQc=
+  dependencies:
+    "@faasjs/deep_merge" beta
+    "@faasjs/logger" beta
+    "@faasjs/request" beta
+    cos-nodejs-sdk-v5 "*"
+
+"@faasjs/request@beta":
+  version "0.0.0-alpha.1"
+  resolved "https://registry.npm.taobao.org/@faasjs/request/download/@faasjs/request-0.0.0-alpha.1.tgz#f84535eeafc3ca486358437cda71bfcbe36c7bcb"
+  integrity sha1-+EU17q/DykhjWEN82nG/y+Nse8s=
+  dependencies:
+    "@faasjs/logger" beta
+
+"@faasjs/trigger-http@beta":
+  version "0.0.0-alpha.3"
+  resolved "https://registry.npm.taobao.org/@faasjs/trigger-http/download/@faasjs/trigger-http-0.0.0-alpha.3.tgz#09b1f7b66761ed72f40934f5f1579c2f6802e8a2"
+  integrity sha1-CbH3tmdh7XL0CTT18VecL2gC6KI=
+  dependencies:
+    "@faasjs/flow" beta
 
 "@jest/console@^24.7.1":
   version "24.7.1"

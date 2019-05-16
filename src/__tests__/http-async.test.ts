@@ -22,5 +22,5 @@ describe('http-async', function () {
     const res = await deploy.deploy(info);
 
     expect(res).toBeTruthy();
-  }, 30000);
+  }, 40000);
 });

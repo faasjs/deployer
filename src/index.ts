@@ -65,6 +65,13 @@ interface Trigger {
   func: Func;
 }
 
+interface Resource {
+  package: {
+    name: string;
+    version: string;
+  };
+}
+
 /**
  * 发布实例
  */
@@ -90,6 +97,11 @@ export default class Deployer {
     } else {
       this.root = root + '/';
     }
+
+    if (!file.endsWith('.flow.ts')) {
+      throw Error('Flow file should end with .flow.ts');
+    }
+
     this.file = file;
     this.staging = staging || 'testing';
     this.logger = new Logger('@faasjs/deployer');
@@ -126,7 +138,7 @@ export default class Deployer {
       throw Error('Flow load failed');
     }
 
-    this.name = this.flow.config.name || this.file.replace(this.root, '').replace('.flow.ts', '').replace(/(\/|\\)/g, '_').replace(/^_?[^_]+_/, '').replace(/_$/, '');
+    this.name = this.flow.config.name || this.file.replace(this.root, '').replace('.flow.ts', '').replace(/^\/?[^/]+\//, '').replace(/\/$/, '');
 
     const config = loadConfig(this.root + 'config/providers/', this.staging);
 
@@ -157,6 +169,7 @@ export default class Deployer {
 
     const functions: Func[] = [];
     const triggers: Trigger[] = [];
+    const resources: Resource[] = [];
 
     // 解析触发配置
     for (const type in this.flow.config.triggers) {
@@ -165,7 +178,7 @@ export default class Deployer {
         const func: Func = {
           build: time,
           key: -1,
-          name: this.name + '_trigger_' + type,
+          name: this.name + '@trigger_' + type,
           resource: this.flow.config.resource,
           type,
         };
@@ -174,7 +187,7 @@ export default class Deployer {
 
         // 增加触发器
         const trigger = this.flow.config.triggers[type as string];
-        const triggerResourceName = trigger.resourceName || this.resources.defaults[type as string];
+        const triggerResourceName = (trigger.resource ? trigger.resource.name : null) || this.resources.defaults[type as string];
         if (!this.resources[triggerResourceName as string]) {
           throw Error('provider resource not found: ' + triggerResourceName);
         }
@@ -203,7 +216,7 @@ export default class Deployer {
       functions.push({
         build: time,
         key: -1,
-        name: this.name + '_invoke_-1',
+        name: this.name + '@invoke_-1',
         resource: this.flow.config.resource,
         type: 'invoke',
       });
@@ -215,14 +228,61 @@ export default class Deployer {
         functions.push({
           build: time,
           key: i,
-          name: this.name + '_invoke_' + i,
+          name: this.name + '@invoke_' + i,
           resource: this.flow.config.resource,
           type: 'invoke',
         });
       }
     }
 
-    this.logger.debug('解析完毕\n云函数：%o\n触发器：%o', functions, triggers);
+    // 解析云资源
+    for (const type in this.flow.config.resources) {
+      if (this.flow.config.resources.hasOwnProperty(type)) {
+        // 增加云资源
+        const resource = this.flow.config.resources[type as string];
+        const resourceName = (resource.resource ? resource.resource.name : null) || type;
+        if (!this.resources[resourceName as string]) {
+          throw Error('Provider resource not found: ' + resourceName);
+        }
+        const resourceResource = deepMerge(
+          this.resources[resourceName as string],
+          { name: resourceName },
+          resource.resource,
+        );
+
+        if (typeof resourceResource!.provider === 'string') {
+          resourceResource!.provider = this.providers[resourceResource!.provider];
+        }
+
+        this.flow.config.resources[type as string] = resourceResource;
+
+        // 查找云资源对应的 npm 包是否存在
+        let packageName = `@faasjs/provider-${resourceResource.type}`;
+        let handler;
+        try {
+          handler = require(packageName);
+        } catch (error) {
+          try {
+            handler = require(resourceResource.type);
+          } catch (error) {
+            throw Error(`Not found resource package: ${packageName}, ${resourceResource.type}`);
+          }
+        }
+
+        if (typeof handler !== 'function') {
+          throw Error(`Resources#${type}'s package is not a function`);
+        }
+
+        resources.push({
+          package: {
+            name: packageName,
+            version: 'beta'
+          }
+        });
+      }
+    }
+
+    this.logger.debug('解析完毕\n云函数：%o\n触发器：%o\n云资源：%o', functions, triggers, resources);
 
     for (const func of functions) {
       this.logger.label = '@faasjs/build:' + func.name;
@@ -243,10 +303,14 @@ export default class Deployer {
         dependencies: {
           '@faasjs/flow-tencentcloud': 'beta',
         },
-        name: func.name,
-        private: true,
-        version: func.build,
+        private: true
       };
+
+      if (resources.length) {
+        for (const resource of resources) {
+          func.packageJSON.dependencies[resource.package.name] = resource.package.version;
+        }
+      }
 
       this.logger.debug('写入 index.js');
 
@@ -282,9 +346,13 @@ export default class Deployer {
  * @build ${func.build}
  * @staging ${this.staging}
  */`,
-        footer: `module.exports.config.name = '${this.name}';
-module.exports.config.resource = ${JSON.stringify(this.flow.config.resource)};
-module.exports.handler = module.exports.createTrigger('${func.type}', ${func.key});`
+        footer: `
+const deepMerge = require('@faasjs/deep_merge');
+const flow = module.exports;
+flow.config.name = '${this.name}';
+flow.config.resource = deepMerge(${JSON.stringify(this.flow.config.resource)}, flow.config.resource);
+flow.config.resources = deepMerge(${JSON.stringify(this.flow.config.resources)}, flow.config.resources);
+flow.handler = flow.createTrigger('${func.type}', ${func.key});`
       });
 
       this.logger.debug('写入 package.json');
@@ -300,6 +368,7 @@ module.exports.handler = module.exports.createTrigger('${func.type}', ${func.key
     return {
       functions,
       triggers,
+      resources,
     };
   }
 

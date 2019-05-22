@@ -1,41 +1,11 @@
 /* eslint-disable security/detect-non-literal-require */
 import Flow from '@faasjs/flow';
-import deepMerge from '@faasjs/deep_merge';
 import Logger from '@faasjs/logger';
+import { loadFlow } from '@faasjs/load';
 import { execSync } from 'child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
-import * as YAML from 'js-yaml';
+import { existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
 import * as rollup from 'rollup';
 import typescript from 'rollup-plugin-typescript2';
-
-const loadConfig = function (root: string, file: string, staging: string) {
-  const configs: any[] = [];
-
-  const paths = file.replace(root, '').replace(/\/[^/]+$/, '').split('/');
-
-  const roots = root.split('/');
-  roots.pop();
-  paths.unshift(roots.pop() as string);
-  paths.unshift(roots.join('/'));
-
-  paths.reduce(function (base, path) {
-    const root = base + '/' + path;
-    const defaults = root + '/config/providers/defaults.yaml';
-
-    if (existsSync(defaults)) {
-      configs.push(YAML.safeLoad(readFileSync(defaults).toString()));
-    }
-
-    const env = root + '/config/providers/' + staging + '.yaml';
-    if (existsSync(env)) {
-      configs.push(YAML.safeLoad(readFileSync(env).toString()));
-    }
-
-    return root;
-  });
-
-  return deepMerge.apply(null, configs);
-};
 
 // 缓存云资源 sdk
 const resourceSdks: any = {};
@@ -68,7 +38,9 @@ const loadSdk = function (root: string, name: string) {
 interface Func {
   build: string;
   name: string;
-  resource: any;
+  resource: {
+    [key: string]: any;
+  };
   type: string | number;
   tmpFolder?: string;
   packageJSON?: {
@@ -100,8 +72,6 @@ export default class Deployer {
   public file: string;
   public staging: string;
   public flow?: Flow;
-  public providers: any;
-  public resources: any;
   public logger: Logger;
 
   /**
@@ -127,7 +97,7 @@ export default class Deployer {
   }
 
   public async build () {
-    this.logger.debug('build %s', this.file);
+    this.logger.info('开始构建 %s', this.file);
 
     // 临时编译 ts
     const bundle = await rollup.rollup({
@@ -154,28 +124,12 @@ export default class Deployer {
     unlinkSync(this.file + '.tmp.js');
 
     if (!this.flow) {
-      throw Error('Flow load failed');
+      throw Error(`Flow load failed: ${this.file}.tmp.js`);
     }
 
     this.name = this.flow.config.name || this.file.replace(this.root, '').replace('.flow.ts', '').replace(/^\/?[^/]+\//, '').replace(/\/$/, '');
 
-    const config = loadConfig(this.root, this.file, this.staging);
-
-    // 处理云函数的资源配置
-    let resourceName = this.flow.config.resource!.name || config.resources.defaults.function;
-
-    if (!resourceName || !config.resources[resourceName as string]) {
-      throw Error('Not found resource: ' + resourceName);
-    }
-
-    this.flow.config.resource = deepMerge(config.resources[resourceName as string], this.flow!.config.resource);
-
-    if (typeof this.flow.config.resource!.provider === 'string') {
-      this.flow.config.resource!.provider = config.providers[this.flow.config.resource!.provider];
-    }
-
-    this.providers = config.providers;
-    this.resources = config.resources;
+    loadFlow(this.flow, this.root, this.file, this.staging);
 
     const time = new Date().toLocaleString('zh-CN', {
       hour12: false,
@@ -197,7 +151,7 @@ export default class Deployer {
         const func: Func = {
           build: time,
           name: this.name + '@trigger_' + type,
-          resource: this.flow.config.resource,
+          resource: this.flow.config.resource!,
           type,
         };
 
@@ -205,23 +159,10 @@ export default class Deployer {
 
         // 增加触发器
         const trigger = this.flow.config.triggers[type as string];
-        const triggerResourceName = (trigger.resource ? trigger.resource.name : null) || this.resources.defaults[type as string];
-        if (!this.resources[triggerResourceName as string]) {
-          throw Error('provider resource not found: ' + triggerResourceName);
-        }
-        const triggerResource = deepMerge(
-          this.resources[triggerResourceName as string],
-          { name: triggerResourceName },
-          trigger.resource,
-        );
-
-        if (typeof triggerResource!.provider === 'string') {
-          triggerResource!.provider = this.providers[triggerResource!.provider];
-        }
 
         triggers.push({
           name: this.name,
-          resource: triggerResource,
+          resource: trigger.resource,
           type,
           origin: trigger,
           func,
@@ -233,8 +174,8 @@ export default class Deployer {
     if (functions.length === 0 && this.flow.config.mode === 'sync') {
       functions.push({
         build: time,
-        name: this.name + '@invoke_-1',
-        resource: this.flow.config.resource,
+        name: this.name + '@invoke',
+        resource: this.flow.config.resource!,
         type: -1,
       });
     }
@@ -245,7 +186,7 @@ export default class Deployer {
         functions.push({
           build: time,
           name: this.name + '@invoke_' + i,
-          resource: this.flow.config.resource,
+          resource: this.flow.config.resource!,
           type: i,
         });
       }
@@ -256,32 +197,17 @@ export default class Deployer {
       if (this.flow.config.resources.hasOwnProperty(type)) {
         // 增加云资源
         const resource = this.flow.config.resources[type as string];
-        const resourceName = (resource.resource ? resource.resource.name : null) || type;
-        if (!this.resources[resourceName as string]) {
-          throw Error('Provider resource not found: ' + resourceName);
-        }
-        const resourceResource = deepMerge(
-          this.resources[resourceName as string],
-          { name: resourceName },
-          resource.resource,
-        );
-
-        if (typeof resourceResource!.provider === 'string') {
-          resourceResource!.provider = this.providers[resourceResource!.provider];
-        }
-
-        this.flow.config.resources[type as string] = resourceResource;
 
         // 查找云资源对应的 npm 包是否存在
-        let packageName = `@faasjs/provider-${resourceResource.type}`;
+        let packageName = `@faasjs/provider-${resource.resource!.type}`;
         let handler;
         try {
           handler = require(packageName);
         } catch (error) {
           try {
-            handler = require(resourceResource.type);
+            handler = require(resource.resource!.type!);
           } catch (error) {
-            throw Error(`Not found resource package: ${packageName}, ${resourceResource.type}`);
+            throw Error(`Not found resource package: ${packageName}, ${resource.resource!.type}`);
           }
         }
 
@@ -397,7 +323,7 @@ flow.handler = flow.createTrigger(${JSON.stringify(func.type)});`
   }) {
     for (const func of functions) {
       this.logger.label = '@faasjs/deploy:' + func.name;
-      this.logger.debug('开始发布云函数');
+      this.logger.info('开始发布云函数 %s', func.name);
 
       const sdk = loadSdk(this.root, func.resource.type);
       await sdk.deploy(this.staging, func);
@@ -405,7 +331,7 @@ flow.handler = flow.createTrigger(${JSON.stringify(func.type)});`
 
     for (const trigger of triggers) {
       this.logger.label = '@faasjs/deploy:' + trigger.type;
-      this.logger.debug('开始发布触发器');
+      this.logger.info('开始发布触发器 %s', trigger.type);
 
       const sdk = loadSdk(this.root, trigger.resource.type);
       await sdk.deploy(this.staging, trigger);

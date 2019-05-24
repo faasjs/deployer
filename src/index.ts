@@ -171,7 +171,7 @@ export default class Deployer {
           handler = require(packageName).handler;
         } catch (error) {
           try {
-            handler = require(trigger.type!).hanlder;
+            handler = require(trigger.type!).handler;
           } catch (error) {
             throw Error(`Not found trigger package: ${packageName}, ${trigger.type}`);
           }
@@ -227,7 +227,7 @@ export default class Deployer {
         let packageName = `@faasjs/provider-${resource.type}`;
         let handler;
         try {
-          handler = require(packageName).hanlder;
+          handler = require(packageName).handler;
         } catch (error) {
           try {
             handler = require(resource.type!).handler;

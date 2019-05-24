@@ -21,7 +21,7 @@ const loadSdk = function (root: string, name: string) {
   }
 
   const paths = [
-    `${root}/config/providers/libs/${name}/index.ts`,
+    `${root}config/providers/libs/${name}/index.ts`,
     `${process.cwd()}/node_modules/@faasjs/provider-${name}/lib/index.js`,
   ];
 
@@ -184,7 +184,7 @@ export default class Deployer {
         triggers.push({
           name: this.name,
           resource: trigger.resource,
-          type,
+          type: trigger.type || type,
           origin: trigger,
           func,
           package: {
@@ -356,6 +356,7 @@ flow.handler = flow.createTrigger(${JSON.stringify(func.type)});`
     for (const func of functions) {
       this.logger.label = '@faasjs/deploy:' + func.name;
       this.logger.info('开始发布云函数 %s', func.name);
+      this.logger.debug('%o', func);
 
       const sdk = loadSdk(this.root, func.resource.type);
       await sdk.deploy(this.staging, func);
@@ -364,6 +365,7 @@ flow.handler = flow.createTrigger(${JSON.stringify(func.type)});`
     for (const trigger of triggers) {
       this.logger.label = '@faasjs/deploy:' + trigger.type;
       this.logger.info('开始发布触发器 %s', trigger.type);
+      this.logger.debug('%o', trigger);
 
       const sdk = loadSdk(this.root, trigger.resource.type);
       await sdk.deploy(this.staging, trigger);

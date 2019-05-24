@@ -1,11 +1,11 @@
 import Deploy from '../index';
 
 describe('http', function () {
-  test('constructor', function () {
-    const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
+  // test('constructor', function () {
+  //   const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
 
-    expect(deploy.file).toEqual(__dirname + '/flows/http.flow.ts');
-  });
+  //   expect(deploy.file).toEqual(__dirname + '/flows/http.flow.ts');
+  // });
 
   test('build', async function () {
     const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
@@ -19,13 +19,13 @@ describe('http', function () {
     expect(info.triggers).toHaveLength(1);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual('{"data":1}');
-  }, 10000);
+  }, 100000);
 
-  test('deploy', async function () {
-    const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
-    const info = await deploy.build();
-    const res = await deploy.deploy(info);
+  // test('deploy', async function () {
+  //   const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
+  //   const info = await deploy.build();
+  //   const res = await deploy.deploy(info);
 
-    expect(res).toBeTruthy();
-  }, 30000);
+  //   expect(res).toBeTruthy();
+  // }, 100000);
 });

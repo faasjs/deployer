@@ -25,5 +25,5 @@ describe('basic', function () {
     const res = await deploy.deploy(info);
 
     expect(res).toBeTruthy();
-  }, 30000);
+  }, 100000);
 });

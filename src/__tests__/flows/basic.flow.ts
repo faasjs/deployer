@@ -1,4 +1,4 @@
-import Flow from '@faasjs/flow-tencentcloud';
+import Flow from '@faasjs/flow';
 
 export default new Flow(
   {},

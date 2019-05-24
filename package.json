@@ -1,6 +1,6 @@
 {
   "name": "@faasjs/deployer",
-  "version": "0.0.0-alpha.8",
+  "version": "0.0.0-alpha.9",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,7 +17,6 @@
     "lib"
   ],
   "dependencies": {
-    "@faasjs/flow-tencentcloud": "beta",
     "@faasjs/load": "beta",
     "@faasjs/provider-tencentcloud-apigateway": "beta",
     "@faasjs/provider-tencentcloud-scf": "beta",
@@ -30,6 +29,8 @@
     "@babel/preset-env": "*",
     "@babel/preset-typescript": "*",
     "@faasjs/eslint-config-recommended": "beta",
+    "@faasjs/flow": "beta",
+    "@faasjs/trigger-http": "beta",
     "@types/debug": "*",
     "@types/jest": "*",
     "@types/node": "*",

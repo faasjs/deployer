@@ -13,7 +13,7 @@ describe('multi', function () {
 
     expect(deploy.name).toEqual('multi');
     expect(info.functions).toHaveLength(2);
-  }, 10000);
+  }, 100000);
 
   test('deploy', async function () {
     const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/multi.flow.ts');
@@ -21,5 +21,5 @@ describe('multi', function () {
     const res = await deploy.deploy(info);
 
     expect(res).toBeTruthy();
-  }, 10000);
+  }, 100000);
 });

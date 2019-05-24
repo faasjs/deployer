@@ -14,7 +14,7 @@ describe('http-async', function () {
     expect(deploy.name).toEqual('http-async');
     expect(info.functions).toHaveLength(2);
     expect(info.triggers).toHaveLength(1);
-  }, 10000);
+  }, 100000);
 
   test('deploy', async function () {
     const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http-async.flow.ts');
@@ -22,5 +22,5 @@ describe('http-async', function () {
     const res = await deploy.deploy(info);
 
     expect(res).toBeTruthy();
-  }, 40000);
+  }, 100000);
 });

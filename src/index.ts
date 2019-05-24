@@ -54,6 +54,10 @@ interface Trigger {
   type: string;
   origin: any;
   func: Func;
+  package: {
+    name: string;
+    version: string;
+  };
 }
 
 interface Resource {
@@ -127,7 +131,7 @@ export default class Deployer {
       throw Error(`Flow load failed: ${this.file}.tmp.js`);
     }
 
-    this.name = this.flow.config.name || this.file.replace(this.root, '').replace('.flow.ts', '').replace(/^\/?[^/]+\//, '').replace(/\/$/, '');
+    this.name = this.flow.name || this.file.replace(this.root, '').replace('.flow.ts', '').replace(/^\/?[^/]+\//, '').replace(/\/$/, '');
 
     loadFlow(this.flow, this.root, this.file, this.staging);
 
@@ -145,20 +149,37 @@ export default class Deployer {
     const resources: Resource[] = [];
 
     // 解析触发配置
-    for (const type in this.flow.config.triggers) {
-      if (this.flow.config.triggers.hasOwnProperty(type)) {
+    for (const type in this.flow.triggers) {
+      if (this.flow.triggers.hasOwnProperty(type)) {
         // 增加触发函数
         const func: Func = {
           build: time,
           name: this.name + '@trigger_' + type,
-          resource: this.flow.config.resource!,
+          resource: this.flow.resource!,
           type,
         };
 
         functions.push(func);
 
         // 增加触发器
-        const trigger = this.flow.config.triggers[type as string];
+        const trigger = this.flow.triggers[type as string];
+
+        // 查找云资源对应的 npm 包是否存在
+        let packageName = `@faasjs/trigger-${trigger.type || type}`;
+        let handler;
+        try {
+          handler = require(packageName).handler;
+        } catch (error) {
+          try {
+            handler = require(trigger.type!).hanlder;
+          } catch (error) {
+            throw Error(`Not found trigger package: ${packageName}, ${trigger.type}`);
+          }
+        }
+
+        if (typeof handler !== 'function') {
+          throw Error(`Triggers#${type}'s package is not a function`);
+        }
 
         triggers.push({
           name: this.name,
@@ -166,48 +187,52 @@ export default class Deployer {
           type,
           origin: trigger,
           func,
+          package: {
+            name: packageName,
+            version: 'beta'
+          }
         });
       }
     }
 
     // 若未配置触发器且不是异步模式，则默认生成一个 invoke 触发器的云函数
-    if (functions.length === 0 && this.flow.config.mode === 'sync') {
+    if (functions.length === 0 && this.flow.mode === 'sync') {
       functions.push({
         build: time,
         name: this.name + '@invoke',
-        resource: this.flow.config.resource!,
+        resource: this.flow.resource!,
         type: -1,
       });
     }
 
     // 异步模式的流程生成多个云函数
-    if (this.flow.config.mode === 'async') {
+    if (this.flow.mode === 'async') {
       for (let i = 0; i < this.flow.steps.length; i++) {
         functions.push({
           build: time,
           name: this.name + '@invoke_' + i,
-          resource: this.flow.config.resource!,
+          resource: this.flow.resource!,
           type: i,
         });
       }
     }
 
     // 解析云资源
-    for (const type in this.flow.config.resources) {
-      if (this.flow.config.resources.hasOwnProperty(type)) {
+    for (const type in this.flow.resources) {
+      if (this.flow.resources.hasOwnProperty(type)) {
         // 增加云资源
-        const resource = this.flow.config.resources[type as string];
+        const resource = this.flow.resources[type as string];
 
         // 查找云资源对应的 npm 包是否存在
-        let packageName = `@faasjs/provider-${resource.resource!.type}`;
+        let packageName = `@faasjs/provider-${resource.type}`;
         let handler;
         try {
-          handler = require(packageName);
+          handler = require(packageName).hanlder;
         } catch (error) {
           try {
-            handler = require(resource.resource!.type!);
+            handler = require(resource.type!).handler;
           } catch (error) {
-            throw Error(`Not found resource package: ${packageName}, ${resource.resource!.type}`);
+            throw Error(`Not found resource package: ${packageName}, ${resource.type}`);
           }
         }
 
@@ -243,10 +268,17 @@ export default class Deployer {
       this.logger.debug('添加基础依赖');
       func.packageJSON = {
         dependencies: {
-          '@faasjs/flow-tencentcloud': 'beta',
+          '@faasjs/flow': 'beta',
+          ['@faasjs/provider-' + func.resource.type]: 'beta'
         },
         private: true
       };
+
+      if (triggers.length) {
+        for (const resource of triggers) {
+          func.packageJSON.dependencies[resource.package.name] = resource.package.version;
+        }
+      }
 
       if (resources.length) {
         for (const resource of resources) {
@@ -291,9 +323,9 @@ export default class Deployer {
         footer: `
 const deepMerge = require('@faasjs/deep_merge');
 const flow = module.exports;
-flow.config.name = '${this.name}';
-flow.config.resource = deepMerge(${JSON.stringify(this.flow.config.resource)}, flow.config.resource);
-flow.config.resources = deepMerge(${JSON.stringify(this.flow.config.resources)}, flow.config.resources);
+flow.name = '${this.name}';
+flow.resource = deepMerge(${JSON.stringify(this.flow.resource)}, flow.resource);
+flow.resources = deepMerge(${JSON.stringify(this.flow.resources)}, flow.resources);
 flow.handler = flow.createTrigger(${JSON.stringify(func.type)});`
       });
 

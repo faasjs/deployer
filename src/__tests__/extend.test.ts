@@ -25,5 +25,5 @@ describe('extend', function () {
     const res = await deploy.deploy(info);
 
     expect(res).toBeTruthy();
-  }, 10000);
+  }, 100000);
 });

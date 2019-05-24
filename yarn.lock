@@ -666,17 +666,17 @@
     typescript "*"
 
 "@faasjs/flow@beta":
-  version "0.0.0-alpha.27"
-  resolved "https://registry.npmjs.org/@faasjs/flow/-/flow-0.0.0-alpha.27.tgz#e6a163dab1cd4cb4d021f3ec81926c8e29e0d27a"
-  integrity sha512-yY3Gzfaa56BpXzQSfj4XGMtdqNdF4OBngBH8Vs7vj26ZccEUkXUApAiSRtKPQqT24VEQqRzldcyv0AIWGprx5A==
+  version "0.0.0-alpha.31"
+  resolved "https://registry.npmjs.org/@faasjs/flow/-/flow-0.0.0-alpha.31.tgz#0d9b4dd34528d28ca52bd490bd6d6fffcca22ee6"
+  integrity sha512-43MKLVQLKlp1NhAAXjHIx7HeTG2HbIdbo8vrnQLG0OCyIYxKm50+K1ueP679ef7KXUt+3XE1ACtKRv5Y6SWwZA==
   dependencies:
     "@faasjs/deep_merge" beta
     "@faasjs/logger" beta
 
 "@faasjs/load@beta":
-  version "0.0.0-alpha.3"
-  resolved "https://registry.npmjs.org/@faasjs/load/-/load-0.0.0-alpha.3.tgz#3b488cf395bc9453b83c889f6e39cb6c2b6294f1"
-  integrity sha512-sSqgL4V+3xY6P1zka2Qdw3mNMo5c0P2JMOTdD9lidrnJn6TZmrqyS2Nd/3mBFy4GWj0PQqy5SaTbVVZABf3BWw==
+  version "0.0.0-alpha.4"
+  resolved "https://registry.npmjs.org/@faasjs/load/-/load-0.0.0-alpha.4.tgz#511ed6e452d38522fbc831f86be0fbd23bb70dd0"
+  integrity sha512-NtChkbIO8fi3Hplnm03udut0ALLwpLXkgs1m/4Wscd8qDeJmXaMG/rp8Eiw9PSn7bd5771DmPVGBtbtOC57ulg==
   dependencies:
     "@faasjs/deep_merge" beta
     js-yaml "*"
@@ -687,9 +687,9 @@
   integrity sha512-ouBDhsooxhQUa7t39Wk0xs6OTd9qsdbQnxnXtyJ/vq5urQFN0DEKGu6CUHo0rejKVr5ATLzonExQXfCKfJgvDw==
 
 "@faasjs/provider-tencentcloud-apigateway@beta":
-  version "0.0.0-alpha.8"
-  resolved "https://registry.npmjs.org/@faasjs/provider-tencentcloud-apigateway/-/provider-tencentcloud-apigateway-0.0.0-alpha.8.tgz#fc14a14479caeffb6faf38c680115cf0e5960b40"
-  integrity sha512-J9RH8cvzrSx3iSyBAASSoYvFUlu+Eowpd6TUYtC8RdUa7KVbh4qNtqyepnM2wesNY82mY9jq/iwXueKvNJctbg==
+  version "0.0.0-alpha.9"
+  resolved "https://registry.npmjs.org/@faasjs/provider-tencentcloud-apigateway/-/provider-tencentcloud-apigateway-0.0.0-alpha.9.tgz#d86d7856ec0391900b7c67aaf6d233a2fb4da4ae"
+  integrity sha512-Vi9iOSNpeTfg0PhuJEdRQSvjCR6zTAPtQ+gtgHa9vNBET8urhuFu6QNQIf2voSWdtELq/8bI4lKlrofGCfaQ5g==
   dependencies:
     "@faasjs/logger" beta
     "@faasjs/request" beta

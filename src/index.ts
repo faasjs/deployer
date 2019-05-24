@@ -52,7 +52,6 @@ interface Trigger {
   name: string;
   resource: any;
   type: string;
-  origin: any;
   func: Func;
   package: {
     name: string;
@@ -183,9 +182,8 @@ export default class Deployer {
 
         triggers.push({
           name: this.name,
-          resource: trigger.resource,
+          resource: trigger,
           type: trigger.type || type,
-          origin: trigger,
           func,
           package: {
             name: packageName,
@@ -367,7 +365,7 @@ flow.handler = flow.createTrigger(${JSON.stringify(func.type)});`
       this.logger.info('开始发布触发器 %s', trigger.type);
       this.logger.debug('%o', trigger);
 
-      const sdk = loadSdk(this.root, trigger.resource.type);
+      const sdk = loadSdk(this.root, trigger.type);
       await sdk.deploy(this.staging, trigger);
     }
 

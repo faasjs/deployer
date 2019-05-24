@@ -165,7 +165,7 @@ export default class Deployer {
         const trigger = this.flow.triggers[type as string];
 
         // 查找云资源对应的 npm 包是否存在
-        let packageName = `@faasjs/trigger-${trigger.type || type}`;
+        let packageName = `@faasjs/trigger-${trigger.triggerType || trigger.type || type}`;
         let handler;
         try {
           handler = require(packageName).handler;

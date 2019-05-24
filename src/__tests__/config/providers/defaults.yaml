@@ -41,6 +41,7 @@ resources:
   http:
     provider: tencentcloud
     type: tencentcloud-apigateway
+    triggerType: http
     config:
       authRequired: 'FALSE'
       enableCORS: 'TRUE'

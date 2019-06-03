@@ -1,25 +1,17 @@
-import Deploy from '../index';
+import { Deployer } from '../index';
+import { execSync } from 'child_process';
 
-describe('multi', function () {
-  test('constructor', function () {
-    const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/multi.flow.ts');
-
-    expect(deploy.file).toEqual(__dirname + '/flows/multi.flow.ts');
+test('multi', async function () {
+  const deployer = new Deployer({
+    root: process.cwd() + '/src/__tests__',
+    filename: __dirname + '/funcs/multi.func.ts',
+    env: 'testing'
   });
+  const info = await deployer.deploy();
 
-  test('build', async function () {
-    const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/multi.flow.ts');
-    const info = await deploy.build();
+  const res = execSync(`node -e "const handler = require('${info.tmp}index.js').handler;(async function invoke(){console.log('|'+JSON.stringify(await handler(0))+'|');})(handler);"`, {
+    cwd: info.tmp
+  }).toString();
 
-    expect(deploy.name).toEqual('multi');
-    expect(info.functions).toHaveLength(2);
-  }, 100000);
-
-  test('deploy', async function () {
-    const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/multi.flow.ts');
-    const info = await deploy.build();
-    const res = await deploy.deploy(info);
-
-    expect(res).toBeTruthy();
-  }, 100000);
-});
+  expect(res.match(/([^|]+)|$/g)[1]).toEqual('1');
+}, 100000);

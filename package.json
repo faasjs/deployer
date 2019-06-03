@@ -1,6 +1,6 @@
 {
   "name": "@faasjs/deployer",
-  "version": "0.0.0-alpha.13",
+  "version": "0.0.0-alpha.14",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,20 +17,16 @@
     "lib"
   ],
   "dependencies": {
-    "@faasjs/load": "beta",
-    "@faasjs/provider-tencentcloud-apigateway": "beta",
-    "@faasjs/provider-tencentcloud-scf": "beta",
-    "rollup": "*",
-    "rollup-plugin-typescript2": "*",
-    "typescript": "*"
+    "@faasjs/cloud_function": "beta",
+    "@faasjs/tencentcloud": "beta"
   },
   "devDependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "*",
     "@babel/preset-typescript": "*",
     "@faasjs/eslint-config-recommended": "beta",
-    "@faasjs/flow": "beta",
-    "@faasjs/trigger-http": "beta",
+    "@faasjs/func": "beta",
+    "@faasjs/http": "beta",
     "@types/debug": "*",
     "@types/jest": "*",
     "@types/node": "*",

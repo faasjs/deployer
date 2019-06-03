@@ -1,13 +1,15 @@
 jest.mock(process.cwd() + '/node_modules/cos-nodejs-sdk-v5', () => {
   return class Client {
-    sliceUploadFile (params, callback) {
+    sliceUploadFile(params, callback) {
+      console.log('mock.cos.sliceUploadFile', params);
       callback();
     }
   };
 });
 
 jest.mock(process.cwd() + '/node_modules/@faasjs/request', () => {
-  return async function (url) {
+  return async function (url, params) {
+    console.log('mock.request', url, params);
     switch (url) {
       case 'https://apigateway.api.qcloud.com/v2/index.php?':
         return {

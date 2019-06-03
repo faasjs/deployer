@@ -1,31 +1,17 @@
-import Deploy from '../index';
+import { Deployer } from '../index';
+import { execSync } from 'child_process';
 
-describe('http', function () {
-  // test('constructor', function () {
-  //   const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
+test('http', async function () {
+  const deployer = new Deployer({
+    root: process.cwd() + '/src/__tests__',
+    filename: __dirname + '/funcs/http.func.ts',
+    env: 'testing'
+  });
+  const info = await deployer.deploy();
 
-  //   expect(deploy.file).toEqual(__dirname + '/flows/http.flow.ts');
-  // });
+  const res = execSync(`node -e "const handler = require('${info.tmp}index.js').handler;(async function invoke(){console.log('|'+JSON.stringify(await handler({body:'0'}))+'|');})(handler);"`, {
+    cwd: info.tmp
+  }).toString();
 
-  test('build', async function () {
-    const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
-    const info = await deploy.build();
-
-    const handler = require(info.functions[0].tmpFolder + '/index.js').handler;
-    const res = await handler(0, {});
-
-    expect(deploy.name).toEqual('http');
-    expect(info.functions).toHaveLength(1);
-    expect(info.triggers).toHaveLength(1);
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual('{"data":1}');
-  }, 100000);
-
-  // test('deploy', async function () {
-  //   const deploy = new Deploy(process.cwd() + '/src/__tests__', __dirname + '/flows/http.flow.ts');
-  //   const info = await deploy.build();
-  //   const res = await deploy.deploy(info);
-
-  //   expect(res).toBeTruthy();
-  // }, 100000);
-});
+  expect(res.match(/([^|]+)|$/g)[1]).toEqual('{"body":"{\\"data\\":0}","statusCode":200}');
+}, 10000);

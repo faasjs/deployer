@@ -5,41 +5,6 @@ import Logger from '@faasjs/logger';
 import deepMerge from '@faasjs/deep_merge';
 import { CloudFunction } from '@faasjs/cloud_function';
 
-export interface DeployData {
-  root: string;
-  filename: string;
-  env?: string;
-  name?: string;
-  config?: {
-    providers: {
-      [key: string]: {
-        type: string;
-        config: {
-          [key: string]: any;
-        };
-      };
-    };
-    plugins: {
-      [key: string]: {
-        provider?: string;
-        type: string;
-        config?: {
-          [key: string]: any;
-        };
-      };
-    };
-  };
-  version?: string;
-  dependencies?: {
-    [key: string]: string;
-  };
-  plugins?: {
-    [key: string]: Plugin[];
-  };
-  logger?: Logger;
-  [key: string]: any;
-}
-
 export class Deployer {
   public deployData: DeployData;
   public func?: Func;
@@ -95,24 +60,24 @@ export class Deployer {
 
     // 按类型分类插件
     data.plugins = Object.create(null);
-    data.plugins.undefined = [];
+    data.plugins!.undefined = [];
     for (const plugin of func.plugins) {
       if (plugin.type) {
-        if (data.plugins[plugin.type]) {
-          data.plugins[plugin.type].push(plugin);
+        if (data.plugins![plugin.type]) {
+          data.plugins![plugin.type].push(plugin);
         } else {
-          data.plugins[plugin.type] = [plugin];
+          data.plugins![plugin.type] = [plugin];
         }
       } else {
-        data.plugins.undefined.push(plugin);
+        data.plugins!.undefined.push(plugin);
       }
     }
 
     // 检查是否存在云函数插件，若没有则插入
-    if (!data.plugins.function) {
+    if (!data.plugins!.function) {
       const functionPlugin = new CloudFunction();
       func.plugins.push(functionPlugin);
-      data.plugins.function = [functionPlugin];
+      data.plugins!.function = [functionPlugin];
     }
 
     await func.deploy(this.deployData);

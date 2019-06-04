@@ -9,8 +9,8 @@ defaults:
         secretId: secretId
         secretKey: secretKey
         region: ap-beijing
-  resources: # 云资源配置
-    defaults:
+  plugins: # 插件默认配置
+    defaults: # 默认插件
       function: func
       http: http
     # 云函数

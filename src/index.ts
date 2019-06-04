@@ -19,7 +19,7 @@ export interface DeployData {
         };
       };
     };
-    resources: {
+    plugins: {
       [key: string]: {
         provider?: string;
         type: string;

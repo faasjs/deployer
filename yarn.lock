@@ -650,9 +650,9 @@
     minimist "^1.2.0"
 
 "@faasjs/cloud_function@beta":
-  version "0.0.0-alpha.1"
-  resolved "https://registry.npmjs.org/@faasjs/cloud_function/-/cloud_function-0.0.0-alpha.1.tgz#6b610e80200e120e26b56880edba0c4d8bd9d165"
-  integrity sha512-PAgVUyCmav1RQTwAanIFWXINCjWvfrAeBU8Ni9rxCAjvVDFjkrjjecCosIHjgym8rKZxEW3EBhE9ekocQlP4+A==
+  version "0.0.0-alpha.5"
+  resolved "https://registry.npmjs.org/@faasjs/cloud_function/-/cloud_function-0.0.0-alpha.5.tgz#13b91c4bba81b0c25486e3219580b5b34adccba9"
+  integrity sha512-NRlqEkE1Nhm9ybLYxmfi06fsSKponfmUttYKEu7r7ANGL4tYYMWXBz13KAKxO8ih93blx59fIn6La4LItPIrjg==
   dependencies:
     "@faasjs/deep_merge" beta
 
@@ -681,14 +681,14 @@
     "@faasjs/logger" beta
 
 "@faasjs/http@beta":
-  version "0.0.0-alpha.3"
-  resolved "https://registry.npmjs.org/@faasjs/http/-/http-0.0.0-alpha.3.tgz#fd64fb6407a9922ab682f5084e067db77b899054"
-  integrity sha512-Q2eo8IcTE9qDQYuhdM2dZy8QK+hnToOUExUCouUeE/tE4wk9zk7ZqD9w6qbo2kZ3xmkm+V9ruyIaiE7UWUTl+w==
+  version "0.0.0-alpha.4"
+  resolved "https://registry.npmjs.org/@faasjs/http/-/http-0.0.0-alpha.4.tgz#f22fdfd7753ad860f171b595ff7efa14f80dd874"
+  integrity sha512-B7cd+lz3hy/4ISW3w/8Kb56Z0HY+eoxCLuZEoCeLpMuGDWOQWwIOxePdXLf+GMH0gcRHdXo+Lh/CvVmo8xN/Ng==
 
 "@faasjs/load@beta":
-  version "0.0.0-alpha.15"
-  resolved "https://registry.npmjs.org/@faasjs/load/-/load-0.0.0-alpha.15.tgz#530c28df76b09a7b208a23b346ae506a2761bd6c"
-  integrity sha512-h1K56tl3EdEbzbsb8S+uWZjd+VFOZkCYi+uHI86Ey3lvHY4v0053aDlzosCvRkxNzap0R0nZ2wPlSyEOvYOgcQ==
+  version "0.0.0-alpha.16"
+  resolved "https://registry.npmjs.org/@faasjs/load/-/load-0.0.0-alpha.16.tgz#4846dcf268c35391bc72818447b4bbb7f3fbd6a9"
+  integrity sha512-EcfMUcP7znX+FIFK+1nw7YX3i8uNeOvUAf9MIQ6J/lvCTzm58UbC4z5FLc6NozZrmgKxy93mNf77d/34eNMRFQ==
   dependencies:
     "@faasjs/deep_merge" beta
     js-yaml "*"
@@ -709,9 +709,9 @@
     "@faasjs/logger" beta
 
 "@faasjs/tencentcloud@beta":
-  version "0.0.0-alpha.3"
-  resolved "https://registry.npmjs.org/@faasjs/tencentcloud/-/tencentcloud-0.0.0-alpha.3.tgz#14cd0933dcf413622fecbe340fa4208f1f80ef6a"
-  integrity sha512-WIbB9H2+uopCa+yXhl0XX57Aqyjg1kxzuZh5XDuYDwBvm7b6F7H+gtrNcmvBbIqXvblASWaMMtuZhF/jqhVXRw==
+  version "0.0.0-alpha.5"
+  resolved "https://registry.npmjs.org/@faasjs/tencentcloud/-/tencentcloud-0.0.0-alpha.5.tgz#5cea813dc642f08e295ecbf89536cb58a912c7fa"
+  integrity sha512-3IkPexYjRVRZxBQLn/432gphEcVu+9PrYNrLTCF5vFsUsQmHQWoeOVhmum36vfQyRGrZUhrJ0UagB+fHJpg6SA==
   dependencies:
     "@faasjs/load" beta
     "@faasjs/request" beta
@@ -1776,9 +1776,9 @@ ecc-jsbn@~0.1.1:
     safer-buffer "^2.1.0"
 
 electron-to-chromium@^1.3.137:
-  version "1.3.142"
-  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.142.tgz#d3db509ac0f0f5a212af234ff3b500d8cc4ea812"
-  integrity sha512-GLOB/wAA2g9l5Hwg1XrPqd6br2WNOPIY8xl/q+g5zZdv3b5fB69oFOooxKxc0DfDfDS1RqaF6hKjwt6v4fuFUw==
+  version "1.3.143"
+  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.143.tgz#8b2a631ab75157aa53d0c2933275643b99ef580b"
+  integrity sha512-J9jOpxIljQZlV6GIP2fwAWq0T69syawU0sH3EW3O2Bgxquiy+veeIT5mBDRz+i3oHUSL1tvVgRKH3/4QiQh9Pg==
 
 emoji-regex@^7.0.1:
   version "7.0.3"

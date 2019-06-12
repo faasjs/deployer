@@ -16,7 +16,7 @@ export class Deployer {
       timeZone: 'Asia/Shanghai',
     }).replace(/(\/|:|\s)/g, '_');
 
-    data.logger = new Logger(data.name);
+    data.logger = new Logger('Deployer');
 
     const Config = loadConfig(data.root, data.filename);
 
@@ -59,25 +59,22 @@ export class Deployer {
     data.dependencies = deepMerge(loadResult.dependencies, func.dependencies);
 
     // 按类型分类插件
-    data.plugins = Object.create(null);
-    data.plugins!.undefined = [];
+    let includeCloudFunction = false;
     for (const plugin of func.plugins) {
-      if (plugin.type) {
-        if (data.plugins![plugin.type]) {
-          data.plugins![plugin.type].push(plugin);
-        } else {
-          data.plugins![plugin.type] = [plugin];
-        }
-      } else {
-        data.plugins!.undefined.push(plugin);
+      if (!plugin.type) {
+        data.logger!.error('Unknow plugin type: %o', plugin);
+        throw Error('[Deployer] Unknow plugin type');
+      }
+
+      if (!includeCloudFunction && plugin.type === 'function') {
+        includeCloudFunction = true;
       }
     }
 
     // 检查是否存在云函数插件，若没有则插入
-    if (!data.plugins!.function) {
+    if (!includeCloudFunction) {
       const functionPlugin = new CloudFunction();
       func.plugins.push(functionPlugin);
-      data.plugins!.function = [functionPlugin];
     }
 
     await func.deploy(this.deployData);

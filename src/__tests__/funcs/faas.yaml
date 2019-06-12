@@ -10,25 +10,14 @@ defaults:
         secretKey: secretKey
         region: ap-beijing
   plugins: # 插件默认配置
-    defaults: # 默认插件
-      function: func
-      http: http
     # 云函数
-    func:
+    cloud_function:
       provider: tencentcloud
-      type: function
+      type: cloud_function
     # API 网关
     http:
       provider: tencentcloud
-      type: apigateway
-      triggerType: http
-      config:
-        authRequired: 'FALSE'
-        enableCORS: 'TRUE'
-        requestConfig.method: POST
-        serviceType: SCF
-        serviceScfIsIntegratedResponse: 'TRUE'
-        serviceTimeout: 16
+      type: http
 local:
 testing:
 production:

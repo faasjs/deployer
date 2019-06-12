@@ -4,6 +4,6 @@ import { Http } from '@faasjs/http';
 export default new Func({
   plugins: [new Http()],
   handler(data: InvokeData) {
-    return data.param;
+    return data.event.body;
   }
 });

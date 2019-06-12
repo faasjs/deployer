@@ -13,5 +13,8 @@ test('http', async function () {
     cwd: info.tmp
   }).toString();
 
-  expect(res.match(/([^|]+)|$/g)[1]).toEqual('{"body":"{\\"data\\":0}","statusCode":200}');
+  const data = JSON.parse(res.match(/([^|]+)|$/g)[1])
+
+  expect(data.statusCode).toEqual(200);
+  expect(data.body).toEqual('{"data":"0"}');
 }, 10000);

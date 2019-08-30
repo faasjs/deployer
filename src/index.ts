@@ -59,20 +59,29 @@ export class Deployer {
     data.dependencies = deepMerge(loadResult.dependencies, func.dependencies);
 
     // 按类型分类插件
-    let includeCloudFunction = false;
-    for (const plugin of func.plugins) {
+    let includedCloudFunction = [];
+    for (let i = 0; i < func.plugins.length; i++) {
+      const plugin = func.plugins[i as number];
       if (!plugin.type) {
         data.logger!.error('Unknow plugin type: %o', plugin);
         throw Error('[Deployer] Unknow plugin type');
       }
 
-      if (!includeCloudFunction && plugin.type === 'function') {
-        includeCloudFunction = true;
+      if (plugin.type === 'cloud_function') {
+        includedCloudFunction.push({
+          index: i,
+          plugin
+        });
       }
     }
 
-    // 检查是否存在云函数插件，若没有则插入
-    if (!includeCloudFunction) {
+    // 将云函数插件移到最后
+    if (includedCloudFunction.length) {
+      for (const plugin of includedCloudFunction) {
+        func.plugins.splice(plugin.index, 1);
+        func.plugins.push(plugin.plugin);
+      }
+    } else {
       const functionPlugin = new CloudFunction();
       func.plugins.push(functionPlugin);
     }
